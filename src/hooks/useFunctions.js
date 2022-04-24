@@ -3,13 +3,14 @@ import { ethers } from "ethers";
 import abi from "@utils/WavePortal.json";
 
 const useFunctions = () => {
-  const contractAddress = "0xb1c1E40F7d6Fe98d400eE33630cF62D7D4226da3";
+  const contractAddress = "0x9de79Db6D200382fAb009c5D1Fd29A3241f7c89b";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
+
   //get all wave function
   const getAllWaves = async () => {
+    const { ethereum } = window;
     try {
-      const { ethereum } = window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
