@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import abi from "@utils/WavePortal.json";
 
 const useFunctions = () => {
-  const contractAddress = "0x346A82661C8C7DA36B979A946c00B8A185d08fc3";
+  const contractAddress = "0x70bF9193bba24eCE58e33aF903575859805E7C93";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
   //get all wave function
@@ -71,7 +71,9 @@ const useFunctions = () => {
         /*
          * Execute the actual wave from your smart contract
          */
-        const waveTxn = await wavePortalContract.wave("this is a message");
+        const waveTxn = await wavePortalContract.wave("this is a message", {
+          gasLimit: 300000,
+        });
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
