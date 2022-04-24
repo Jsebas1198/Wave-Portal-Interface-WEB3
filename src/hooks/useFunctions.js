@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import abi from "@utils/WavePortal.json";
 
 const useFunctions = () => {
-  const contractAddress = "0x70bF9193bba24eCE58e33aF903575859805E7C93";
+  const contractAddress = "0xb1c1E40F7d6Fe98d400eE33630cF62D7D4226da3";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
   //get all wave function
