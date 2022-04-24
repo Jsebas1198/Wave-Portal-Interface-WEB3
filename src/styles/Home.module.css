@@ -32,3 +32,12 @@
   border-radius: 5px;
   
 }
+.inputWave{
+  margin-top: 16px;
+}
+
+.spanAddress{
+  margin-top: 16px;
+  font-weight: bold;
+  color: black;
+}

@@ -6,6 +6,7 @@ const useFunctions = () => {
   const contractAddress = "0x9de79Db6D200382fAb009c5D1Fd29A3241f7c89b";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
+  const [inputValue, setInputValue] = useState("");
 
   //get all wave function
   const getAllWaves = async () => {
@@ -72,13 +73,13 @@ const useFunctions = () => {
         /*
          * Execute the actual wave from your smart contract
          */
-        const waveTxn = await wavePortalContract.wave("this is a message", {
+        const waveTransaction = await wavePortalContract.wave(inputValue, {
           gasLimit: 300000,
         });
-        console.log("Mining...", waveTxn.hash);
+        console.log("Mining...", waveTransaction.hash);
 
-        await waveTxn.wait();
-        console.log("Mined -- ", waveTxn.hash);
+        await waveTransaction.wait();
+        console.log("Mined -- ", waveTransaction.hash);
 
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
@@ -89,7 +90,16 @@ const useFunctions = () => {
       console.log(error);
     }
   };
-  return { getAllWaves, allWaves, wave };
+  return {
+    getAllWaves,
+    allWaves,
+    wave,
+    setAllWaves,
+    contractABI,
+    contractAddress,
+    inputValue,
+    setInputValue,
+  };
 };
 
 export default useFunctions;

@@ -2,10 +2,25 @@ import React, { useEffect } from "react";
 import styles from "@styles/Home.module.css";
 import useConnectWallet from "@hooks/useConnectWallet.js";
 import useFunctions from "@hooks/useFunctions";
+import { ethers } from "ethers";
 const App = () => {
   const { connectWallet, currentAccount, setCurrentAccount } =
     useConnectWallet();
-  const { getAllWaves, allWaves, wave } = useFunctions();
+  const {
+    getAllWaves,
+    allWaves,
+    wave,
+    setAllWaves,
+    contractABI,
+    contractAddress,
+    inputValue,
+    setInputValue,
+  } = useFunctions();
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    console.log(e.target.value);
+  };
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -23,7 +38,6 @@ const App = () => {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
-        getAllWaves();
       } else {
         console.log("No authorized account found");
       }
@@ -34,6 +48,45 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
+    getAllWaves();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * Listen in for emitter events!
+   */
+  useEffect(() => {
+    let wavePortalContract;
+
+    const onNewWave = (from, timestamp, message) => {
+      console.log("NewWave", from, timestamp, message);
+      setAllWaves((prevState) => [
+        ...prevState,
+        {
+          address: from,
+          timestamp: new Date(timestamp * 1000),
+          message: message,
+        },
+      ]);
+    };
+
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      wavePortalContract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
+      wavePortalContract.on("NewWave", onNewWave);
+    }
+
+    return () => {
+      if (wavePortalContract) {
+        wavePortalContract.off("NewWave", onNewWave);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -43,9 +96,18 @@ const App = () => {
         <div className={styles.header}>👋 Hey there!</div>
 
         <div className={styles.bio}>
-          I am Juan Fernandez and I know about blockchain technology? Connect
-          your Ethereum wallet and wave at me!
+          <p>
+            I am Juan Fernandez and I know about blockchain technology!! Connect
+            your Ethereum wallet and start waving!
+          </p>
         </div>
+        <input
+          className={styles.inputWave}
+          type="text"
+          placeholder="Send a wave"
+          value={inputValue}
+          onChange={(e) => handleChange(e)}
+        />
 
         <button className={styles.waveButton} onClick={wave}>
           Wave at Me
@@ -56,7 +118,10 @@ const App = () => {
             Connect Wallet
           </button>
         )}
-        {currentAccount}
+        <p>
+          <span className={styles.spanAddress}>Address: </span>
+          {currentAccount}
+        </p>
 
         {allWaves.map((wave, index) => {
           return (
