@@ -10,50 +10,6 @@ const useFunctions = () => {
   const [totalWaves, setTotalWaves] = useState(0);
   const [addressWaves, setAddressWaves] = useState(0);
 
-  //get all wave function
-  const getAllWaves = async () => {
-    const { ethereum } = window;
-    try {
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        );
-
-        /*
-         * Call the getAllWaves method from your Smart Contract
-         */
-        const waves = await wavePortalContract.getAllWaves();
-
-        /*
-         * We only need address, timestamp,message and chekc if is a winner in our UI so let's
-         * pick those out
-         */
-        let wavesCleaned = [];
-        waves.forEach((wave) => {
-          wavesCleaned.push({
-            address: wave.waver,
-            timestamp: new Date(wave.timestamp * 1000),
-            message: wave.message,
-            Winner: wave.isWinner,
-          });
-        });
-
-        /*
-         * Store our data in React State
-         */
-        setAllWaves(wavesCleaned);
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   /**
    * Implement your wave method here
    */
@@ -122,7 +78,6 @@ const useFunctions = () => {
   };
 
   return {
-    getAllWaves,
     allWaves,
     wave,
     setAllWaves,

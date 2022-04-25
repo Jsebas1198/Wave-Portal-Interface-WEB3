@@ -7,7 +7,6 @@ const App = () => {
   const { connectWallet, currentAccount, setCurrentAccount } =
     useConnectWallet();
   const {
-    getAllWaves,
     allWaves,
     wave,
     setAllWaves,
@@ -39,8 +38,6 @@ const App = () => {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
-
-        getAllWaves();
       } else {
         console.log("No authorized account found");
       }
@@ -72,11 +69,56 @@ const App = () => {
     }
   };
 
+  //get all wave function
+  const getAllWaves = async () => {
+    const { ethereum } = window;
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        /*
+         * Call the getAllWaves method from your Smart Contract
+         */
+        const waves = await wavePortalContract.getAllWaves();
+
+        /*
+         * We only need address, timestamp,message and chekc if is a winner in our UI so let's
+         * pick those out
+         */
+        let wavesCleaned = [];
+        waves.forEach((wave) => {
+          wavesCleaned.push({
+            address: wave.waver,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message,
+            Winner: wave.isWinner,
+          });
+        });
+
+        /*
+         * Store our data in React State
+         */
+        setAllWaves(wavesCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     window.ethereum.on("accountsChanged", () => {
       window.location.reload();
     });
     checkIfWalletIsConnected();
+    getAllWaves();
     waveNumber();
     waveAdressNumber();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +130,7 @@ const App = () => {
   }, [currentAccount]);
 
   /**
-   * Listen in for emitter events!
+   * Listen in for emitter events
    */
   useEffect(() => {
     let wavePortalContract;
