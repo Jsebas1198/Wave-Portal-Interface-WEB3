@@ -58,14 +58,15 @@ const App = () => {
   useEffect(() => {
     let wavePortalContract;
 
-    const onNewWave = (from, timestamp, message) => {
-      console.log("NewWave", from, timestamp, message);
+    const onNewWave = (from, timestamp, message, isWinner) => {
+      console.log("NewWave", from, timestamp, message, isWinner);
       setAllWaves((prevState) => [
         ...prevState,
         {
           address: from,
           timestamp: new Date(timestamp * 1000),
           message: message,
+          Winner: isWinner,
         },
       ]);
     };
@@ -136,6 +137,11 @@ const App = () => {
               <div>Address: {wave.address}</div>
               <div>Time: {wave.timestamp.toString()}</div>
               <div>Message: {wave.message}</div>
+              <div>
+                {wave.Winner == 0
+                  ? "Better luck next time"
+                  : "You win 0.0001 eth, CONGRATS!!"}
+              </div>
             </div>
           );
         })}

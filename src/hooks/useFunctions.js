@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import abi from "@utils/WavePortal.json";
 
 const useFunctions = () => {
-  const contractAddress = "0x9de79Db6D200382fAb009c5D1Fd29A3241f7c89b";
+  const contractAddress = "0xfbbdC22f9f513D4920c757b5fAcC026217155D44";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -36,6 +36,7 @@ const useFunctions = () => {
             address: wave.waver,
             timestamp: new Date(wave.timestamp * 1000),
             message: wave.message,
+            Winner: wave.isWinner,
           });
         });
 
