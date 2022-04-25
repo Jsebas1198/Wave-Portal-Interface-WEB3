@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "@styles/Home.module.css";
 import useConnectWallet from "@hooks/useConnectWallet.js";
 import useFunctions from "@hooks/useFunctions";
@@ -13,14 +13,15 @@ const App = () => {
     setAllWaves,
     contractABI,
     contractAddress,
+    handleChange,
     inputValue,
-    setInputValue,
+    addressWaves,
+    setAddressWaves,
+    totalWaves,
+    setTotalWaves,
+    waveNumber,
   } = useFunctions();
 
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
-    console.log(e.target.value);
-  };
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -38,6 +39,8 @@ const App = () => {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
+
+        getAllWaves();
       } else {
         console.log("No authorized account found");
       }
@@ -46,11 +49,43 @@ const App = () => {
     }
   };
 
+  const waveAdressNumber = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let address = await wavePortalContract.getAdressWaves(currentAccount);
+        setAddressWaves(address.toNumber());
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    window.ethereum.on("accountsChanged", () => {
+      window.location.reload();
+    });
     checkIfWalletIsConnected();
-    getAllWaves();
+    waveNumber();
+    waveAdressNumber();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    waveAdressNumber();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentAccount]);
 
   /**
    * Listen in for emitter events!
@@ -59,7 +94,6 @@ const App = () => {
     let wavePortalContract;
 
     const onNewWave = (from, timestamp, message, isWinner) => {
-      console.log("NewWave", from, timestamp, message, isWinner);
       setAllWaves((prevState) => [
         ...prevState,
         {
@@ -71,6 +105,14 @@ const App = () => {
       ]);
     };
 
+    const onNewTotalWaves = (totalWaves) => {
+      console.log("NewTotalWaves", totalWaves);
+      setTotalWaves(totalWaves++);
+    };
+    const onNewAddresWaves = (addressWaves) => {
+      console.log("NewAddresWaves", addressWaves);
+      setAddressWaves(addressWaves++);
+    };
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
@@ -81,11 +123,15 @@ const App = () => {
         signer
       );
       wavePortalContract.on("NewWave", onNewWave);
+      wavePortalContract.on("NewTotalWaves", onNewTotalWaves);
+      wavePortalContract.on("NewAddressWave", onNewAddresWaves);
     }
 
     return () => {
       if (wavePortalContract) {
         wavePortalContract.off("NewWave", onNewWave);
+        wavePortalContract.off("NewTotalWaves", onNewTotalWaves);
+        wavePortalContract.off("NewAddressWave", onNewAddresWaves);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,6 +168,12 @@ const App = () => {
         <p>
           <span className={styles.spanAddress}>Address: </span>
           {currentAccount}
+          <span className={styles.spanAddress}> Addres waves: </span>
+          {addressWaves}
+        </p>
+        <p>
+          <span className={styles.spanAddress}> Total Waves: </span>
+          {totalWaves}
         </p>
 
         {allWaves.map((wave, index) => {

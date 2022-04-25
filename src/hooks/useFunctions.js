@@ -3,10 +3,12 @@ import { ethers } from "ethers";
 import abi from "@utils/WavePortal.json";
 
 const useFunctions = () => {
-  const contractAddress = "0xfbbdC22f9f513D4920c757b5fAcC026217155D44";
+  const contractAddress = "0x10b11fbB179EA403d4ABd923eA0e03a086BA2F01";
   const contractABI = abi.abi;
   const [allWaves, setAllWaves] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [totalWaves, setTotalWaves] = useState(0);
+  const [addressWaves, setAddressWaves] = useState(0);
 
   //get all wave function
   const getAllWaves = async () => {
@@ -27,7 +29,7 @@ const useFunctions = () => {
         const waves = await wavePortalContract.getAllWaves();
 
         /*
-         * We only need address, timestamp, and message in our UI so let's
+         * We only need address, timestamp,message and chekc if is a winner in our UI so let's
          * pick those out
          */
         let wavesCleaned = [];
@@ -68,8 +70,8 @@ const useFunctions = () => {
           signer
         );
 
-        let count = await wavePortalContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
+        // let count = await wavePortalContract.getTotalWaves();
+        // console.log("Retrieved total wave count...", count.toNumber());
 
         /*
          * Execute the actual wave from your smart contract
@@ -81,9 +83,6 @@ const useFunctions = () => {
 
         await waveTransaction.wait();
         console.log("Mined -- ", waveTransaction.hash);
-
-        count = await wavePortalContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -91,6 +90,37 @@ const useFunctions = () => {
       console.log(error);
     }
   };
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    console.log(e.target.value);
+  };
+
+  //Functions from index
+  const waveNumber = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        let count = await wavePortalContract.getTotalWaves();
+        let totalNumberOfWaves = count.toNumber();
+        setTotalWaves(totalNumberOfWaves);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     getAllWaves,
     allWaves,
@@ -98,8 +128,13 @@ const useFunctions = () => {
     setAllWaves,
     contractABI,
     contractAddress,
+    handleChange,
     inputValue,
-    setInputValue,
+    addressWaves,
+    setAddressWaves,
+    totalWaves,
+    setTotalWaves,
+    waveNumber,
   };
 };
 
