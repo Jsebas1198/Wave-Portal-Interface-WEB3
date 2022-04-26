@@ -1,8 +1,6 @@
-import { useState } from "react";
-
+import { useFunctions } from "./useFunctions";
 const useConnectWallet = () => {
-  const [currentAccount, setCurrentAccount] = useState("");
-
+  const { setCurrentAccount } = useFunctions();
   /**
    * Implement your connectWallet method here
    */
@@ -28,8 +26,6 @@ const useConnectWallet = () => {
 
   return {
     connectWallet,
-    currentAccount,
-    setCurrentAccount,
   };
 };
 
