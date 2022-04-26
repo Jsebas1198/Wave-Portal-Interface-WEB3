@@ -21,7 +21,6 @@ const App = () => {
     currentAccount,
     checkIfWalletIsConnected,
     waveAdressNumber,
-    getAllWaves,
   } = useFunctions();
 
   useEffect(() => {
