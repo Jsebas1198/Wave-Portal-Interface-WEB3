@@ -1,16 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Wave portal project
 
-## Getting Started
+**Link to project:** https://627d973f05b5871486c75ee8--zippy-arithmetic-b653b8.netlify.app/
 
-First, run the development server:
+![kryptobirdz_app](https://user-images.githubusercontent.com/96799477/168184228-d238a78e-76c7-473e-8d61-6fd376fbc8a7.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## How It's Made:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Tech used:** HTML, CSS, JavaScript, React, Solidity, Hardhat, ethers
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+To use the app, you must be connected to a Rinkeby network, write anything that you want on the box and then send a message to everyone that have access to the portal, when a wave is sent, the address that sent it have a chance to get 0,0001 eth, the number of waves that an address sent is shown on the interface as the total number of waves. To interact with the smart contract in this project I use ethers, but another option could be web3. The number of waves changes in real time thanks to the event listeners of the smart contract events that are programmed on the code.
+
+## Optimizations
+
+The app is not responsive, so an optimization for this project could be to make it responsive.  
+
+## Lessons Learned:
+
+Use of hardhat to test the smart contract and the use of ethers, get a better acknowledge of solidity to program smart contracts an use the events in it to render the values on real time in the UI.
+
+## Examples:
+Take a look at these couple examples that I have in my own portfolio:
+
+**PlatziPunks-Backend:** https://github.com/Jsebas1198/PlatziPunks-Backend-SmartContracts-WEB3
+
+**PlatziPunks-Frontend:** https://github.com/Jsebas1198/PlatziPunks-Frontend-WEB3
+
+**CryptoBirz-Marketplace:** https://github.com/Jsebas1198/CryptoBirz-Marketplace
+
 
