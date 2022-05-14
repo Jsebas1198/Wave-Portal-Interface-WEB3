@@ -1,6 +1,6 @@
 # Wave portal project
 
-**Link to project:** https://627d973f05b5871486c75ee8--zippy-arithmetic-b653b8.netlify.app/
+**Link to project:** https://shimmering-crumble-9e7191.netlify.app
 
 ![Wave_Portal](https://user-images.githubusercontent.com/96799477/168448232-1871a2a5-4eb6-4904-9391-0ddebfc5fc7d.png)
 
